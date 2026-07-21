@@ -17,5 +17,6 @@ public class UrlEntity {
     @Indexed(unique = true)
     private String shortUrl;
 
+    @Indexed(unique = true)
     private String longUrl;
 }
