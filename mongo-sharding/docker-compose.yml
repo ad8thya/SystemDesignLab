@@ -1,0 +1,57 @@
+version: "3.8"
+
+networks:
+  mongo-shard-net:
+    driver: bridge
+
+services:
+  configsvr1:
+    image: mongo:7.0
+    container_name: configsvr1
+    command: mongod --configsvr --replSet configReplSet --port 27019 --bind_ip_all
+    ports:
+      - "27019:27019"
+    networks:
+      - mongo-shard-net
+    volumes:
+      - configsvr1_data:/data/db
+
+  shard1svr1:
+    image: mongo:7.0
+    container_name: shard1svr1
+    command: mongod --shardsvr --replSet shard1ReplSet --port 27018 --bind_ip_all
+    ports:
+      - "27018:27018"
+    networks:
+      - mongo-shard-net
+    volumes:
+      - shard1svr1_data:/data/db
+
+  shard2svr1:
+    image: mongo:7.0
+    container_name: shard2svr1
+    command: mongod --shardsvr --replSet shard2ReplSet --port 27020 --bind_ip_all
+    ports:
+      - "27020:27020"
+    networks:
+      - mongo-shard-net
+    volumes:
+      - shard2svr1_data:/data/db
+
+  mongos:
+    image: mongo:7.0
+    container_name: mongos
+    command: mongos --configdb configReplSet/configsvr1:27019 --port 27017 --bind_ip_all
+    ports:
+      - "27021:27017"
+    networks:
+      - mongo-shard-net
+    depends_on:
+      - configsvr1
+      - shard1svr1
+      - shard2svr1
+
+volumes:
+  configsvr1_data:
+  shard1svr1_data:
+  shard2svr1_data:
