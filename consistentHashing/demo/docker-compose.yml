@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  mongo-node-1:
+    image: mongo:7.0
+    container_name: mongo-node-1
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-node-1-data:/data/db
+    networks:
+      - mongo-network
+
+  mongo-node-2:
+    image: mongo:7.0
+    container_name: mongo-node-2
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-node-2-data:/data/db
+    networks:
+      - mongo-network
+
+  mongo-node-3:
+    image: mongo:7.0
+    container_name: mongo-node-3
+    ports:
+      - "27019:27017"
+    volumes:
+      - mongo-node-3-data:/data/db
+    networks:
+      - mongo-network
+
+networks:
+  mongo-network:
+    driver: bridge
+
+volumes:
+  mongo-node-1-data:
+  mongo-node-2-data:
+  mongo-node-3-data:
